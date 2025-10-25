@@ -1,8 +1,6 @@
-// Supabase Edge Function: Gerador de Plano de Aula (OpenRouter + CORS)
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 
 serve(async (req) => {
-  // --- CORS handler ---
   if (req.method === "OPTIONS") {
     return new Response("ok", {
       headers: {
@@ -14,13 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    // --- Recupera a chave da OpenRouter (armazenada via supabase secrets set) ---
     const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
     if (!OPENROUTER_API_KEY) {
       throw new Error("OPENROUTER_API_KEY ausente nas secrets do Supabase.");
     }
 
-    // --- Lê os dados enviados do frontend ---
     const {
       tema,
       etapa_ano,
@@ -52,7 +48,6 @@ serve(async (req) => {
       5. Observações adicionais
     `;
 
-    // --- Chama o modelo GPT-4o-mini via OpenRouter ---
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -81,7 +76,6 @@ serve(async (req) => {
     const data = await response.json();
     const plan = data?.choices?.[0]?.message?.content ?? "Não foi possível gerar o plano.";
 
-    // --- Retorna o resultado ---
     return new Response(JSON.stringify({ plan }), {
       headers: {
         "Content-Type": "application/json",

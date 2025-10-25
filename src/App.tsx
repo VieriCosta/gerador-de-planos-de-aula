@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabaseClient";
-import AuthView from "./AuthView";   // ou "./views/AuthView" se você moveu
-import MainView from "./MainView";   // idem
+import AuthView from "./AuthView";
+import MainView from "./MainView";
 import "./index.css";
 
 export default function App() {

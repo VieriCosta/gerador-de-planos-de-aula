@@ -71,16 +71,15 @@ export default function MainView({ onLogout }: { onLogout: () => void }) {
       const token = sessionData.session?.access_token;
       if (!token) throw new Error("Sessão inválida. Faça login novamente.");
 
-      // 2) chamar a função com Authorization (JWT) + apikey (anon)
       const resp = await fetch(FUNC_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
-        },
-        body: JSON.stringify(inputs),
-      });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(inputs),
+});
+
 
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) {
@@ -96,7 +95,6 @@ export default function MainView({ onLogout }: { onLogout: () => void }) {
       const user = userData?.user;
       if (!user) throw new Error("Usuário não autenticado.");
 
-      // A função retorna { plan: "..." } (markdown). Mapeamos para seu tipo.
       const planoConvertido: PlanoIA = { introducao_ludica: data.plan ?? "" };
 
       // 4) salvar no banco
@@ -110,7 +108,7 @@ export default function MainView({ onLogout }: { onLogout: () => void }) {
         nivel_turma: nivel,
         tom_estilo: tom,
         inputs_json: inputs,
-        output_json: data, // guarda bruto também
+        output_json: data,
       });
       if (insertErr) throw insertErr;
 
